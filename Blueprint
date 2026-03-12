@@ -1,0 +1,12 @@
+SHIPPING-PROJECT/   <-- Open this main folder in VS Code
+│
+├── app.py                (Your Python Backend)
+├── database_setup.sql    (Your SQL commands)
+│
+├── static/               (Folder for public assets)
+│   ├── style.css         (Your CSS)
+│   └── script.js         (Your JavaScript)
+│
+└── templates/            (Folder for HTML pages - Flask requires this name!)
+    ├── index.html
+    └── dashboard.html
