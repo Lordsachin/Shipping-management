@@ -1,55 +1,70 @@
--- 1. Create the Database
-CREATE DATABASE IF NOT EXISTS shipping_db;
-USE shipping_db;
+-- PostgreSQL setup script for shipping_db
+-- Database: Supabase (AWS PostgreSQL)
+-- If your cloud provider already gives a database, skip CREATE DATABASE and connect directly.
+-- Note: This file uses PostgreSQL-specific syntax (SERIAL, ON CONFLICT, LANGUAGE plpgsql, etc.)
 
--- 2. Create 'Shipping_Methods' Table (Reference Data)
--- We create this first because 'Shipments' needs to refer to it.
-CREATE TABLE IF NOT EXISTS Shipping_Methods (
-    Method_ID INT AUTO_INCREMENT PRIMARY KEY,
-    Method_Name VARCHAR(50) NOT NULL,
-    Cost_per_km DECIMAL(10, 2) NOT NULL,
-    Speed VARCHAR(20)
+CREATE DATABASE shipping_db;
+
+-- Connect to shipping_db before running the rest of this script.
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id SERIAL PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Insert the standard Shipping Rates (From your project logic)
-INSERT INTO Shipping_Methods (Method_Name, Cost_per_km, Speed) VALUES 
+CREATE TABLE IF NOT EXISTS shipping_methods (
+    method_id SERIAL PRIMARY KEY,
+    method_name VARCHAR(50) NOT NULL,
+    cost_per_km NUMERIC(10, 2) NOT NULL,
+    speed VARCHAR(20)
+);
+
+INSERT INTO shipping_methods (method_name, cost_per_km, speed) VALUES
 ('Sea', 2.00, 'Slow'),
 ('Road', 5.00, 'Medium'),
 ('Air', 10.00, 'Fast'),
-('Rail', 3.00, 'Medium');
+('Rail', 3.00, 'Medium')
+ON CONFLICT DO NOTHING;
 
--- 4. Create 'Orders' Table (Customer Info)
-CREATE TABLE IF NOT EXISTS Orders (
-    Order_ID INT AUTO_INCREMENT PRIMARY KEY,
-    Customer_Name VARCHAR(100) NOT NULL,
-    Address TEXT NOT NULL,
-    Phone VARCHAR(15),
-    Order_Date DATETIME DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_name VARCHAR(100) NOT NULL,
+    address TEXT NOT NULL,
+    phone VARCHAR(15),
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 5. Create 'Shipments' Table (The Core Logic)
-CREATE TABLE IF NOT EXISTS Shipments (
-    Shipment_ID INT AUTO_INCREMENT PRIMARY KEY,
-    Order_ID INT,
-    Method_ID INT,
-    Distance_km DECIMAL(10, 2),
-    Total_Cost DECIMAL(10, 2),
-    
-    -- Foreign Keys link these tables together
-    FOREIGN KEY (Order_ID) REFERENCES Orders(Order_ID),
-    FOREIGN KEY (Method_ID) REFERENCES Shipping_Methods(Method_ID)
+CREATE TABLE IF NOT EXISTS shipments (
+    shipment_id SERIAL PRIMARY KEY,
+    order_id INT REFERENCES orders(order_id),
+    method_id INT REFERENCES shipping_methods(method_id),
+    distance_km NUMERIC(10, 2),
+    total_cost NUMERIC(10, 2)
 );
 
--- 6. Create 'Tracking' Table (Status Updates)
-CREATE TABLE IF NOT EXISTS Tracking (
-    Tracking_ID VARCHAR(50) PRIMARY KEY, -- Example: TRK-1001
-    Shipment_ID INT,
-    Current_Status VARCHAR(50) DEFAULT 'Order Placed',
-    Last_Updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (Shipment_ID) REFERENCES Shipments(Shipment_ID)
+CREATE TABLE IF NOT EXISTS tracking (
+    tracking_id VARCHAR(50) PRIMARY KEY,
+    shipment_id INT REFERENCES shipments(shipment_id),
+    current_status VARCHAR(50) DEFAULT 'Order Placed',
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Verify that tables are created
-SHOW TABLES;
-SELECT * FROM Shipping_Methods;
+-- Optional trigger to auto-update tracking.last_updated
+CREATE OR REPLACE FUNCTION set_last_updated()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.last_updated = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_set_last_updated ON tracking;
+CREATE TRIGGER trg_set_last_updated
+BEFORE UPDATE ON tracking
+FOR EACH ROW
+EXECUTE FUNCTION set_last_updated();
+
+SELECT * FROM shipping_methods;
