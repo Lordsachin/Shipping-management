@@ -2,33 +2,213 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #1abc9c; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: sans-serif; }
-        .card { width: 100%; max-width: 400px; padding: 40px; border-radius: 8px; border: none; }
-        .btn-green { background-color: #16a085; color: white; width: 100%; padding: 12px; }
-        .btn-green:hover { background-color: #149174; color: white; }
+        :root {
+            --card-bg: #f8fff9;
+            --text-main: #123325;
+            --muted: #4d6a5c;
+            --input-bg: #e8f7ee;
+            --input-border: #c0e8d0;
+            --button: #1f8f5f;
+            --button-hover: #186f4b;
+            --hero-1: #0b3d2c;
+            --hero-2: #1f6b4b;
+            --hero-3: #58c894;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Manrope', sans-serif;
+            background: url("{{ url_for('static', filename='images/titanic-1.jpg') }}") center/cover no-repeat fixed;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .auth-shell {
+            width: 100%;
+            max-width: 420px;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 20px 45px rgba(7, 24, 17, 0.35);
+            animation: riseIn 0.7s ease both;
+        }
+
+        .hero-art {
+            height: 215px;
+            position: relative;
+            background: linear-gradient(160deg, var(--hero-1) 0%, var(--hero-2) 55%, var(--hero-3) 100%);
+        }
+
+        .hero-art::before,
+        .hero-art::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(230, 255, 240, 0.2);
+        }
+
+        .hero-art::before {
+            width: 140px;
+            height: 140px;
+            right: 35px;
+            top: 24px;
+        }
+
+        .hero-art::after {
+            width: 85px;
+            height: 85px;
+            left: 34px;
+            bottom: 20px;
+            background: rgba(220, 255, 235, 0.28);
+        }
+
+        .wave {
+            position: absolute;
+            border-radius: 60% 40% 0 0;
+            transform: rotate(-4deg);
+        }
+
+        .wave.one {
+            width: 260px;
+            height: 120px;
+            background: #0f4d35;
+            left: -14px;
+            bottom: -34px;
+        }
+
+        .wave.two {
+            width: 220px;
+            height: 110px;
+            background: #1d6a48;
+            right: -28px;
+            bottom: -28px;
+            transform: rotate(4deg);
+        }
+
+        .signup-card {
+            background: var(--card-bg);
+            padding: 26px 28px 24px;
+        }
+
+        .signup-title {
+            color: var(--text-main);
+            margin: 0 0 16px;
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+        }
+
+        .form-control {
+            border-radius: 999px;
+            padding: 11px 16px;
+            border: 1px solid var(--input-border);
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        .form-control:focus {
+            border-color: #77d5a7;
+            box-shadow: 0 0 0 0.2rem rgba(39, 166, 108, 0.2);
+            background: #f1fff6;
+        }
+
+        .btn-signup {
+            background-color: var(--button);
+            color: white;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.35px;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        .btn-signup:hover {
+            background-color: var(--button-hover);
+            color: white;
+        }
+
+        .alert {
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 0.84rem;
+        }
+
+        .links a {
+            color: #216f4e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes riseIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 16px; }
+            .auth-shell { max-width: 100%; }
+            .hero-art { height: 190px; }
+            .signup-card { padding: 22px 20px; }
+        }
     </style>
 </head>
 <body>
-    <div class="card shadow">
-        <h2 class="text-center mb-4" style="color: #16a085;">Create Account</h2>
-        
-        <form action="/signup" method="POST">
-            <div class="mb-3">
-                <input type="text" name="fullname" class="form-control p-3" placeholder="Full Name" required>
+    <div class="auth-shell">
+        <div class="hero-art" aria-hidden="true">
+            <div class="wave one"></div>
+            <div class="wave two"></div>
+        </div>
+
+        <div class="signup-card">
+            <h2 class="signup-title">Create Account</h2>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-warning p-2 text-center">{{ messages[0] }}</div>
+                {% endif %}
+            {% endwith %}
+
+            <form action="/signup" method="POST">
+                <input type="text" name="fullname" class="form-control" placeholder="Full Name" required>
+                <input type="email" name="email" class="form-control" placeholder="Email Address" required>
+                <input type="password" name="password" class="form-control" placeholder="Create Password" required>
+                <button type="submit" class="btn btn-signup">Sign Up</button>
+            </form>
+
+            <div class="links">
+                <a href="/login">Already have an account? Login</a>
             </div>
-            <div class="mb-3">
-                <input type="email" name="email" class="form-control p-3" placeholder="Email Address" required>
-            </div>
-            <div class="mb-3">
-                <input type="password" name="password" class="form-control p-3" placeholder="Create Password" required>
-            </div>
-            <button type="submit" class="btn btn-green">SIGN UP</button>
-        </form>
-        <div class="text-center mt-3">
-            <a href="/login" style="color: #16a085; text-decoration: none;">Already have an account? Login</a>
         </div>
     </div>
 </body>
