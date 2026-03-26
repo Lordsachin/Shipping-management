@@ -175,11 +175,17 @@
                 resultBox.style.display = 'block';
                 if(data.status === 'success') {
                     resultBox.className = "result-box alert alert-success";
-                    resultBox.innerHTML = `<h4>Order Confirmed!</h4><p>Tracking ID: <strong>${data.tracking_id}</strong></p><p>Cost: Rs ${data.cost}</p>`;
+                    resultBox.innerHTML = `<h4>Order Confirmed!</h4><p>Tracking ID: <strong>${data.tracking_id}</strong></p><p>Cost: Rs ${data.cost.toFixed(2)}</p>`;
                 } else {
                     resultBox.className = "result-box alert alert-danger";
                     resultBox.innerHTML = "Error: " + data.message;
                 }
+            })
+            .catch(error => {
+                resultBox.style.display = 'block';
+                resultBox.className = "result-box alert alert-danger";
+                resultBox.innerHTML = "Error: " + error.message;
+                console.error('Place Order Error:', error);
             });
         }
 
@@ -197,7 +203,10 @@
                 box.style.display = 'block';
                 if(data.status === 'found') {
                     box.className = "result-box alert alert-info";
-                    box.innerHTML = `<ul class="list-group"><li class="list-group-item">Status: ${data.data.Current_Status}</li><li class="list-group-item">User: ${data.data.Customer_Name}</li></ul>`;
+                    const status = data.data.current_status ?? data.data.Current_Status;
+                    const customer = data.data.customer_name ?? data.data.Customer_Name;
+                    const cost = data.data.total_cost ?? data.data.Total_Cost;
+                    box.innerHTML = `<ul class="list-group"><li class="list-group-item">Status: ${status}</li><li class="list-group-item">User: ${customer}</li><li class="list-group-item">Cost: Rs ${Number(cost).toFixed(2)}</li></ul>`;
                 } else {
                     box.className = "result-box alert alert-warning";
                     box.innerHTML = "Tracking ID not found.";
