@@ -1,6 +1,6 @@
 # Global Shipping Management System
 
-A comprehensive web-based logistics dashboard built with Flask and MySQL. This application allows users to register, log in, place shipping orders, calculate estimated costs based on delivery distance and transport methods, and track their shipments in real-time.
+A comprehensive web-based logistics dashboard built with Flask and PostgreSQL. This application allows users to register, log in, place shipping orders, calculate estimated costs based on delivery distance and transport methods, and track their shipments in real-time.
 
 ## Features
 
@@ -13,13 +13,13 @@ A comprehensive web-based logistics dashboard built with Flask and MySQL. This a
 ## Tech Stack
 
 - **Backend:** Python, Flask
-- **Database:** MySQL
+- **Database:** PostgreSQL
 - **Frontend:** HTML5, CSS3, JavaScript (Fetch API), Bootstrap 5
 
 ## Prerequisites
 
 - Python 3.8+
-- MySQL Server
+- PostgreSQL Server
 
 ## Installation & Setup
 
@@ -37,18 +37,27 @@ A comprehensive web-based logistics dashboard built with Flask and MySQL. This a
 
 3. **Install Dependencies:**
    ```bash
-   pip install flask mysql-connector-python
+   pip install -r requirements.txt
    ```
 
-4. **Database Setup:**
-   - Open your MySQL command-line tool or MySQL Workbench.
-   - Run the SQL script provided in `database_setup.sql` to create the database (`shipping_db`) and necessary tables, including the initial shipping rates.
-   - **Important:** Ensure you update the database connection credentials in `app.py` (line 17) to match your local MySQL configuration:
-     ```python
-     password='your_mysql_password'
-     ```
+4. **Create a `.env` file in the project root:**
+   ```env
+   FLASK_SECRET_KEY=replace_with_a_strong_secret
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USER=postgres
+   DB_PASSWORD=your_postgres_password
+   DB_NAME=shipping_db
+   DB_SSLMODE=prefer
+   DB_CONNECT_TIMEOUT=10
+   ```
 
-5. **Run the Application:**
+5. **Database Setup (PostgreSQL):**
+    - Open `psql` (or your PostgreSQL GUI).
+    - Run the SQL script in `database_setup.sql` to create `shipping_db` and required tables.
+    - The app loads values from your `.env` file automatically.
+
+6. **Run the Application:**
    ```bash
    python app.py
    ```
@@ -70,7 +79,7 @@ A comprehensive web-based logistics dashboard built with Flask and MySQL. This a
 ## Potential Improvements (Roadmap)
 
 - **Security:** Implement password hashing (e.g., Werkzeug) for enhanced user security.
-- **Configuration:** Migrate database configurations and secret keys to environment variables (`.env`).
+- **Configuration:** Keep database configurations and secret keys in environment variables (`.env`).
 - **Database Optimization:** Utilize a database connection pool or an ORM like SQLAlchemy for better performance.
 - **Code Structuring:** Separate routing logic into Flask Blueprints for improved scalability.
 
