@@ -1,0 +1,12 @@
+[core]
+dialect = postgres
+ignore_rules = L009,L034
+max_line_length = 120
+
+[sqlfluff:indentation]
+indent_unit = space
+indent_size = 2
+
+[sqlfluff:rules]
+# Ignore specific PostgreSQL syntax warnings
+ignore = L009, L034, L045
