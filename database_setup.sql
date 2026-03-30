@@ -1,11 +1,9 @@
--- PostgreSQL setup script for shipping_db
--- Database: Supabase (AWS PostgreSQL)
--- If your cloud provider already gives a database, skip CREATE DATABASE and connect directly.
--- Note: This file uses PostgreSQL-specific syntax (SERIAL, ON CONFLICT, LANGUAGE plpgsql, etc.)
+
+
 
 CREATE DATABASE shipping_db;
 
--- Connect to shipping_db before running the rest of this script.
+
 
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
@@ -24,9 +22,9 @@ CREATE TABLE IF NOT EXISTS shipping_methods (
 
 INSERT INTO shipping_methods (method_name, cost_per_km, speed) VALUES
 ('Sea', 2.00, 'Slow'),
-('Road', 5.00, 'Medium'),
-('Air', 10.00, 'Fast'),
-('Rail', 3.00, 'Medium')
+('Road', 4.00, 'Medium'),
+('Air', 70.00, 'Fast'),
+('Rail', 2.00, 'Medium')
 ON CONFLICT DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS orders (
@@ -52,7 +50,7 @@ CREATE TABLE IF NOT EXISTS tracking (
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Optional trigger to auto-update tracking.last_updated
+
 CREATE OR REPLACE FUNCTION set_last_updated()
 RETURNS TRIGGER AS $$
 BEGIN
