@@ -1,14 +1,14 @@
 # Global Shipping Management System
 
-A comprehensive web-based logistics dashboard built with Flask and PostgreSQL. This application allows users to register, log in, place shipping orders, calculate estimated costs based on delivery distance and transport methods, and track their shipments in real-time.
+This is a Flask + PostgreSQL web app for basic shipping management. It lets users sign up, log in, place shipment orders, estimate delivery cost by method and distance, and track shipments.
 
 ## Features
 
-- **User Authentication:** Secure user registration, login, and session management.
-- **Order Management:** Place new shipments by providing sender/receiver details and delivery addresses.
-- **Dynamic Cost Calculation:** Automatically calculate shipping costs based on distance (km) and selected shipping methods (Sea, Road, Air, Rail).
-- **Shipment Tracking:** Generate unique Tracking IDs (e.g., TRK-12345) and track current shipment status and total cost.
-- **Interactive UI:** Responsive dashboard built using Bootstrap 5 and FontAwesome icons.
+- **User Authentication:** Registration, login, logout, and session handling.
+- **Order Management:** Create shipment orders with customer and address details.
+- **Cost Calculation:** Cost is calculated from distance and selected shipping method.
+- **Shipment Tracking:** Generates tracking IDs (for example, TRK-12345) and shows shipment status.
+- **UI:** Bootstrap-based interface for order placement and tracking.
 
 ## Tech Stack
 
@@ -29,7 +29,7 @@ A comprehensive web-based logistics dashboard built with Flask and PostgreSQL. T
    cd shipping-management
    ```
 
-2. **Set up a Virtual Environment (Optional but recommended):**
+2. **Set up a virtual environment (optional):**
    ```bash
    python -m venv .venv
    source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
@@ -52,10 +52,10 @@ A comprehensive web-based logistics dashboard built with Flask and PostgreSQL. T
    DB_CONNECT_TIMEOUT=10
    ```
 
-5. **Database Setup (PostgreSQL):**
-    - Open `psql` (or your PostgreSQL GUI).
-    - Run the SQL script in `database_setup.sql` to create `shipping_db` and required tables.
-    - The app loads values from your `.env` file automatically.
+5. **Database setup (PostgreSQL):**
+   - Open `psql` (or any PostgreSQL client).
+   - Run `database_setup.sql`.
+   - The app reads DB settings from `.env`.
 
 6. **Run the Application:**
    ```bash
@@ -66,22 +66,22 @@ A comprehensive web-based logistics dashboard built with Flask and PostgreSQL. T
 ## Project Structure
 
 ```text
-├── Blueprint/               # Future modular routing
+├── Blueprint/               # Notes for folder layout
 ├── templates/               # HTML templates
-│   ├── index.html           # Main dashboard UI
+│   ├── index.html           # Dashboard page
 │   ├── login.html           # User login page
 │   └── signup.html          # User registration page
-├── app.py                   # Main Flask application and server routes
-├── database_setup.sql       # Database schema creation and initial reference data
+├── app.py                   # Flask routes and backend logic
+├── database_setup.sql       # Schema and seed data
 └── README.md                # Project documentation
 ```
 
 ## Potential Improvements (Roadmap)
 
-- **Security:** Implement password hashing (e.g., Werkzeug) for enhanced user security.
-- **Configuration:** Keep database configurations and secret keys in environment variables (`.env`).
-- **Database Optimization:** Utilize a database connection pool or an ORM like SQLAlchemy for better performance.
-- **Code Structuring:** Separate routing logic into Flask Blueprints for improved scalability.
+- **Security:** Store passwords as hashes.
+- **Configuration:** Keep secrets and DB config in environment variables.
+- **Performance:** Add connection pooling or use an ORM like SQLAlchemy.
+- **Structure:** Move routes into Flask Blueprints as the app grows.
 
 ## License
 
